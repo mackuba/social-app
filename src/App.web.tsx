@@ -79,6 +79,9 @@ function InnerApp() {
   // init
   useEffect(() => {
     async function onLaunch(account?: SessionAccount) {
+
+      console.dlog("App initialized", location.href)
+
       try {
         if (account) {
           await resumeSession(account)
