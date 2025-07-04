@@ -27,7 +27,7 @@ if (!window.name) {
 console.dlog = (...args) => {
   console.log(...args)
 
-  fetch('http://localhost:3030/log', {
+  fetch(`/log`, {
     method: 'POST',
     body: JSON.stringify({ args, tabId: window.name }),
     headers: { 'Content-Type': 'application/json' },
