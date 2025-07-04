@@ -19,6 +19,23 @@ const BSKY_STORAGE = 'BSKY_STORAGE'
 const broadcast = new BroadcastChannel('BSKY_BROADCAST_CHANNEL')
 const UPDATE_EVENT = 'BSKY_UPDATE'
 
+if (!window.name) {
+  const tabId = Math.floor(1000 + Math.random() * 9000)
+  window.name = tabId
+}
+
+console.dlog = (...args) => {
+  console.log(...args)
+
+  fetch('http://localhost:3030/log', {
+    method: 'POST',
+    body: JSON.stringify({ args, tabId: window.name }),
+    headers: { 'Content-Type': 'application/json' },
+  }).catch(() => {})
+}
+
+console.dlog('Dlog initialized')
+
 let _state: Schema = defaults
 const _emitter = new EventEmitter()
 
