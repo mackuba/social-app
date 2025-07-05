@@ -24,7 +24,7 @@ if (!window.name) {
   window.name = tabId
 }
 
-console.dlog = (...args) => {
+window.dlog = (...args) => {
   console.log(...args)
 
   fetch(`/log`, {
@@ -34,7 +34,7 @@ console.dlog = (...args) => {
   }).catch(() => {})
 }
 
-console.dlog('Dlog initialized')
+window.dlog('Dlog initialized')
 
 let _state: Schema = defaults
 const _emitter = new EventEmitter()
@@ -58,7 +58,7 @@ export async function write<K extends keyof Schema>(
   key: K,
   value: Schema[K],
 ): Promise<void> {
-  console.dlog('write', key, value);
+  window.dlog('write', key, value);
   const next = readFromStorage()
   if (next) {
     // The storage could have been updated by a different tab before this tab is notified.
@@ -90,7 +90,7 @@ export function onUpdate<K extends keyof Schema>(
   key: K,
   cb: (v: Schema[K]) => void,
 ): () => void {
-  console.dlog('onUpdate', key);
+  window.dlog('onUpdate', key);
   const listener = () => cb(get(key))
   _emitter.addListener('update', listener) // Backcompat while upgrading
   _emitter.addListener('update:' + key, listener)
@@ -116,7 +116,7 @@ function onStorage() {
     return
   }
   if (next) {
-    console.dlog('onStorage', next);
+    window.dlog('onStorage', next);
     _state = next
     _emitter.emit('update')
   }
@@ -134,7 +134,7 @@ async function onBroadcastMessage({data}: MessageEvent) {
       return
     }
     if (next) {
-      console.dlog('onBroadcastMessage', next);
+      window.dlog('onBroadcastMessage', next);
 
       _state = next
       if (typeof data.event.key === 'string') {
@@ -154,7 +154,7 @@ function writeToStorage(value: Schema) {
   const rawData = tryStringify(value)
   if (rawData) {
     try {
-      console.dlog('writeToStorage', value);
+      window.dlog('writeToStorage', value);
 
       localStorage.setItem(BSKY_STORAGE, rawData)
     } catch (e) {
@@ -178,7 +178,7 @@ function readFromStorage(): Schema | undefined {
     } else {
       const result = tryParse(rawData)
       if (result) {
-        console.dlog('readFromStorage', result);
+        window.dlog('readFromStorage', result);
         lastRawData = rawData
         lastResult = normalizeData(result)
         return lastResult
