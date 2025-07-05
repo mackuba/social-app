@@ -15,8 +15,6 @@ import {type Gate} from './gates'
 
 const SDK_KEY = 'client-SXJakO39w9vIhl3D44u8UupyzFl4oZ2qPIkjwcvuPsV'
 
-export const initPromise = initialize()
-
 type StatsigUser = {
   userID: string | undefined
   // TODO: Remove when enough users have custom.platform:
@@ -243,10 +241,6 @@ export async function tryFetchGates(
     // Don't leak errors to the calling code, this is meant to be always safe.
     console.error(e)
   }
-}
-
-export function initialize() {
-  return Statsig.initialize(SDK_KEY, null, createStatsigOptions([]))
 }
 
 export function Provider({children}: {children: React.ReactNode}) {
