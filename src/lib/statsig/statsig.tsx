@@ -153,28 +153,11 @@ type GateOptions = {
 }
 
 export function useGate(): (gateName: Gate, options?: GateOptions) => boolean {
-  const cache = React.useContext(GateCache)
-  if (!cache) {
-    throw Error('useGate() cannot be called outside StatsigProvider.')
-  }
   const gate = React.useCallback(
     (gateName: Gate, options: GateOptions = {}): boolean => {
-      const cachedValue = cache.get(gateName)
-      if (cachedValue !== undefined) {
-        return cachedValue
-      }
-      let value = false
-      if (Statsig.initializeCalled()) {
-        if (options.dangerouslyDisableExposureLogging) {
-          value = Statsig.checkGateWithExposureLoggingDisabled(gateName)
-        } else {
-          value = Statsig.checkGate(gateName)
-        }
-      }
-      cache.set(gateName, value)
-      return value
+      return false
     },
-    [cache],
+    [],
   )
   return gate
 }
