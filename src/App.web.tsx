@@ -80,7 +80,7 @@ function InnerApp() {
   useEffect(() => {
     async function onLaunch(account?: SessionAccount) {
 
-      console.dlog("App initialized", location.href)
+      window.dlog("App initialized", location.href)
 
       try {
         if (account) {

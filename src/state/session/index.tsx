@@ -54,7 +54,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
     (agent: BskyAgent, accountDid: string, sessionEvent: AtpSessionEvent) => {
       const refreshedAccount = agentToSessionAccount(agent) // Mutable, so snapshot it right away.
 
-      console.dlog('onAgentSessionChange', sessionEvent);
+      window.dlog('onAgentSessionChange', sessionEvent);
 
       if (sessionEvent === 'expired' || sessionEvent === 'create-failed') {
         emitSessionDropped()
@@ -104,7 +104,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
       )
 
       console.log('LOGGED IN!!!');
-      console.dlog('login callback');
+      window.dlog('login callback');
 
       if (signal.aborted) {
         return
@@ -129,7 +129,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
   >(
     logContext => {
       addSessionDebugLog({type: 'method:start', method: 'logout'})
-      console.dlog('logout callback', sessionEvent);
+      window.dlog('logout callback', sessionEvent);
       cancelPendingTask()
       dispatch({
         type: 'logged-out-current-account',
@@ -165,7 +165,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
 
   const resumeSession = React.useCallback<SessionApiContext['resumeSession']>(
     async storedAccount => {
-      console.dlog('resume session');
+      window.dlog('resume session');
       addSessionDebugLog({
         type: 'method:start',
         method: 'resumeSession',
@@ -216,7 +216,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
           a => a.did === state.currentAgentState.did,
         ),
       }
-      console.dlog('state.needsPersist', persistedData);
+      window.dlog('state.needsPersist', persistedData);
       addSessionDebugLog({type: 'persisted:broadcast', data: persistedData})
       persisted.write('session', persistedData)
     }
@@ -225,7 +225,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
   React.useEffect(() => {
     return persisted.onUpdate('session', nextSession => {
       const synced = nextSession
-      console.dlog('persisted.onUpdate', synced);
+      window.dlog('persisted.onUpdate', synced);
       addSessionDebugLog({type: 'persisted:receive', data: synced})
       dispatch({
         type: 'synced-accounts',
