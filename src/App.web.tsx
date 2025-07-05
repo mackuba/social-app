@@ -10,7 +10,6 @@ import {useLingui} from '@lingui/react'
 import * as Sentry from '@sentry/react-native'
 
 import {QueryProvider} from '#/lib/react-query'
-import {Provider as StatsigProvider} from '#/lib/statsig/statsig'
 import {ThemeProvider} from '#/lib/ThemeContext'
 import I18nProvider from '#/locale/i18nProvider'
 import {logger} from '#/logger'
@@ -120,7 +119,6 @@ function InnerApp() {
                   key={currentAccount?.did}>
                   <QueryProvider currentDid={currentAccount?.did}>
                     <ComposerProvider>
-                      <StatsigProvider>
                         <MessagesProvider>
                           {/* LabelDefsProvider MUST come before ModerationOptsProvider */}
                           <LabelDefsProvider>
@@ -154,7 +152,6 @@ function InnerApp() {
                             </ModerationOptsProvider>
                           </LabelDefsProvider>
                         </MessagesProvider>
-                      </StatsigProvider>
                     </ComposerProvider>
                   </QueryProvider>
                   <ToastContainer />
