@@ -90,7 +90,7 @@ export function onUpdate<K extends keyof Schema>(
   key: K,
   cb: (v: Schema[K]) => void,
 ): () => void {
-  window.dlog('onUpdate', key);
+  window.dlog('registering onUpdate', key);
   const listener = () => cb(get(key))
   _emitter.addListener('update', listener) // Backcompat while upgrading
   _emitter.addListener('update:' + key, listener)
@@ -111,12 +111,13 @@ export async function clearStorage() {
 clearStorage satisfies PersistedApi['clearStorage']
 
 function onStorage() {
+  window.dlog('onStorage');
   const next = readFromStorage()
   if (next === _state) {
     return
   }
   if (next) {
-    window.dlog('onStorage', next);
+    window.dlog('onStorage = ', next);
     _state = next
     _emitter.emit('update')
   }
@@ -129,12 +130,13 @@ async function onBroadcastMessage({data}: MessageEvent) {
       data.event?.type === UPDATE_EVENT)
   ) {
     // read next state, possibly updated by another tab
+    window.dlog('onBroadcastMessage', next);
     const next = readFromStorage()
     if (next === _state) {
       return
     }
     if (next) {
-      window.dlog('onBroadcastMessage', next);
+      window.dlog('onBroadcastMessage = ', next);
 
       _state = next
       if (typeof data.event.key === 'string') {

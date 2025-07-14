@@ -225,7 +225,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
   React.useEffect(() => {
     return persisted.onUpdate('session', nextSession => {
       const synced = nextSession
-      window.dlog('persisted.onUpdate', synced);
+      window.dlog('persisted.onUpdate(session)', synced);
       addSessionDebugLog({type: 'persisted:receive', data: synced})
       dispatch({
         type: 'synced-accounts',
@@ -235,10 +235,13 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
       const syncedAccount = synced.accounts.find(
         a => a.did === synced.currentAccount?.did,
       )
+      window.dlog('persisted.onUpdate(session) 2', syncedAccount);
       if (syncedAccount && syncedAccount.refreshJwt) {
         if (syncedAccount.did !== state.currentAgentState.did) {
+          window.dlog('persisted.onUpdate(session) 3', syncedAccount.did, state.currentAgentState.did);
           resumeSession(syncedAccount)
         } else {
+          window.dlog('persisted.onUpdate(session) 4');
           const agent = state.currentAgentState.agent as BskyAgent
           const prevSession = agent.session
           agent.sessionManager.session = sessionAccountToSession(syncedAccount)

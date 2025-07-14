@@ -35,6 +35,7 @@ export async function createAgentAndResume(
     event: AtpSessionEvent,
   ) => void,
 ) {
+  window.dlog('createAgentAndResume');
   const agent = new BskyAppAgent({service: storedAccount.service})
   if (storedAccount.pdsUrl) {
     agent.sessionManager.pdsUrl = new URL(storedAccount.pdsUrl)
@@ -42,9 +43,12 @@ export async function createAgentAndResume(
   const gates = tryFetchGates(storedAccount.did, 'prefer-low-latency')
   const moderation = configureModerationForAccount(agent, storedAccount)
   const prevSession: AtpSessionData = sessionAccountToSession(storedAccount)
+
   if (isSessionExpired(storedAccount)) {
+    window.dlog('createAgent: resume session 1', prevSession);
     await networkRetry(1, () => agent.resumeSession(prevSession))
   } else {
+    window.dlog('createAgent: resume session 2', prevSession);
     agent.sessionManager.session = prevSession
     if (!storedAccount.signupQueued) {
       networkRetry(3, () => agent.resumeSession(prevSession)).catch(
