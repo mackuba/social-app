@@ -46,7 +46,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
   const cancelPendingTask = useOneTaskAtATime()
   const [state, dispatch] = React.useReducer(reducer, null, () => {
     const initialState = getInitialState(persisted.get('session').accounts)
-    addSessionDebugLog({type: 'reducer:init', state: initialState})
+    addSessionDebugLog({type: 'reducer:init'})
     return initialState
   })
 

@@ -90,7 +90,7 @@ export function addSessionErrorLog(did: string, event: AtpSessionEvent) {
 
 export function addSessionDebugLog(log: Log) {
   try {
-    if (!Statsig.initializeCalled() || !Statsig.getStableID()) {
+    /*if (!Statsig.initializeCalled() || !Statsig.getStableID()) {
       // Drop these logs for now.
       return
     }
@@ -100,9 +100,15 @@ export function addSessionDebugLog(log: Log) {
     }
     // if (!Statsig.checkGate('debug_session')) {
     //   return
-    // }
+    // }*/
+
     const messageIndex = nextMessageIndex++
-    const {type, ...content} = log
+    const { type, method, ...rest } = log
+
+    window.dlog(type, method, rest)
+    return
+
+    /*const {type, ...content} = log
     let payload = JSON.stringify(content, replacer)
 
     let nextSliceIndex = 0
@@ -117,7 +123,7 @@ export function addSessionDebugLog(log: Log) {
         sliceIndex: String(sliceIndex),
         slice,
       })
-    }
+    }*/
   } catch (e) {
     console.error(e)
   }
