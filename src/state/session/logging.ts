@@ -63,7 +63,7 @@ type Log =
 export function wrapSessionReducerForLogging(reducer: Reducer): Reducer {
   return function loggingWrapper(prevState: State, action: Action): State {
     const nextState = reducer(prevState, action)
-    addSessionDebugLog({type: 'reducer:call', prevState, action, nextState})
+    addSessionDebugLog({type: 'reducer:call'})
     return nextState
   }
 }
