@@ -24,12 +24,16 @@ if (!window.name) {
   window.name = tabId
 }
 
+let dlogId = 0
+
 window.dlog = (...args) => {
   console.log(...args)
 
+  dlogId++
+
   fetch(`/log`, {
     method: 'POST',
-    body: JSON.stringify({ args, tabId: window.name }),
+    body: JSON.stringify({ args, tabId: window.name, logId: dlogId, logTime: new Date().getTime() }),
     headers: { 'Content-Type': 'application/json' },
   }).catch(() => {})
 }
