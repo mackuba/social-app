@@ -115,7 +115,6 @@ export async function clearStorage() {
 clearStorage satisfies PersistedApi['clearStorage']
 
 function onStorage() {
-  window.dlog('onStorage');
   const next = readFromStorage()
   if (next === _state) {
     return
