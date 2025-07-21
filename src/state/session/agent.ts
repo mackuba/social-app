@@ -288,11 +288,15 @@ class BskyAppAgent extends BskyAgent {
     // Now the agent is ready.
     const account = agentToSessionAccountOrThrow(this)
     let lastSession = this.sessionManager.session
+    window.dlog('prepare: storing lastSession', lastSession)
     this.persistSessionHandler = event => {
+      window.dlog('persistSessionHandler')
       if (this.sessionManager.session) {
         lastSession = this.sessionManager.session
+        window.dlog('updating lastSession', lastSession)
       } else if (event === 'network-error') {
         // Put it back, we'll try again later.
+        window.dlog('resetting lastSession', lastSession)
         this.sessionManager.session = lastSession
       }
 
