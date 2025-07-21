@@ -52,6 +52,7 @@ export function useAccountEmailState() {
     queryKey: accountEmailStateQueryKey,
     queryFn: async () => {
       // will also trigger updates to `#/state/session` data
+      window.dlog("useAccountEmailState resumeSession", agent.session)
       const {data} = await agent.resumeSession(agent.session!)
       return {
         isEmailVerified: !!data.emailConfirmed,
