@@ -25,17 +25,36 @@ if (!window.name) {
 }
 
 let dlogId = 0
+let logQueue = []
 
 window.dlog = (...args) => {
   console.log(...args)
 
   dlogId++
 
+  let logData = { args, tabId: window.name, logId: dlogId, logTime: new Date().getTime() };
+
   fetch(`/log`, {
     method: 'POST',
-    body: JSON.stringify({ args, tabId: window.name, logId: dlogId, logTime: new Date().getTime() }),
+    body: JSON.stringify(logData),
     headers: { 'Content-Type': 'application/json' },
-  }).catch(() => {})
+  }).then(() => {
+    if (logQueue.length > 0) {
+      console.log('sending log queue', logQueue)
+      let logs = logQueue
+      logQueue = []
+
+      fetch(`/log`, {
+        method: 'POST',
+        body: JSON.stringify(logs),
+        headers: { 'Content-Type': 'application/json' }
+      }).catch(() => {
+        logQueue = logs.concat(logQueue)
+      })
+    }
+  }).catch((e) => {
+    logQueue.push(logData)
+  })
 }
 
 window.dlog('Dlog initialized')
