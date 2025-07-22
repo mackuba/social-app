@@ -152,7 +152,7 @@ async function onBroadcastMessage({data}: MessageEvent) {
       data.event?.type === UPDATE_EVENT)
   ) {
     // read next state, possibly updated by another tab
-    window.dlog('onBroadcastMessage', next);
+    window.dlog('onBroadcastMessage', data);
     const next = readFromStorage()
     if (next === _state) {
       return
