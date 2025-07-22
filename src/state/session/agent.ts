@@ -240,6 +240,8 @@ export function sessionAccountToSession(
 
 // Not exported. Use factories above to create it.
 let realFetch = globalThis.fetch
+window.requestLog = []
+
 class BskyAppAgent extends BskyAgent {
   persistSessionHandler: ((event: AtpSessionEvent) => void) | undefined =
     undefined
@@ -250,6 +252,12 @@ class BskyAppAgent extends BskyAgent {
       async fetch(...args) {
         let success = false
         try {
+          if (args[0] instanceof Request) {
+            requestLog.unshift({ date: new Date().getTime(), url: args[0].url, token: args[0].headers?.get('Authorization') })
+          } else {
+            requestLog.unshift({ date: new Date().getTime(), url: args[0], token: args[1].headers?.get('Authorization') })
+          }
+
           const result = await realFetch(...args)
           success = true
           return result
@@ -265,6 +273,10 @@ class BskyAppAgent extends BskyAgent {
         }
       },
       persistSession: (event: AtpSessionEvent) => {
+        requestLog.filter((x, i) => (new Date().getTime() - x.date < 60 * 1000 || i <= 2)).reverse().forEach(x => {
+          window.dlog('fetch', x)
+        })
+
         if (this.persistSessionHandler) {
           this.persistSessionHandler(event)
         }
@@ -290,7 +302,7 @@ class BskyAppAgent extends BskyAgent {
     let lastSession = this.sessionManager.session
     window.dlog('prepare: storing lastSession', lastSession)
     this.persistSessionHandler = event => {
-      window.dlog('persistSessionHandler')
+      window.dlog('persistSessionHandler', event)
       if (this.sessionManager.session) {
         lastSession = this.sessionManager.session
         window.dlog('updating lastSession', lastSession)
