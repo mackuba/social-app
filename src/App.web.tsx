@@ -81,6 +81,10 @@ function InnerApp() {
 
       window.dlog("App initialized", location.href)
 
+      document.addEventListener('visibilitychange', () => {
+        window.dlog('visibilitychange', document.visibilityState)
+      })
+
       try {
         if (account) {
           await resumeSession(account)
